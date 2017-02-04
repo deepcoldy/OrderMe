@@ -1,99 +1,3 @@
-<template>
-	<div class="block">
-		<div class="count" v-if="count != 0">{{ count }}</div>
-		<img :src="img || 'https://martin-upload.b0.upaiyun.com/web/2017/02/4cb4a876a19277c786af8614074ab05a.jpg'" alt="">
-		<div class="name">{{ num + ' ' + name }}</div>
-		<div class="price">{{ '￥' + price }}</div>
-		<div class="order">
-			<div @click="half">半</div>
-			<div @click="add">+</div>
-			<div @click="minus">-</div>
-		</div>
-	</div>
-</template>
-
-<script>
-export default {
-	name: 'list',
-	data() {
-		return {
-			count: 0,
-		};
-	},
-	props: ['num', 'name', 'img', 'price'],
-	methods: {
-		add() {
-			this.$parent.price = Number(this.$parent.price) + Number(this.price);
-			this.count += 1;
-			this.addToOrder();
-		},
-		minus() {
-			if (this.count !== 0) {
-				if (this.count === 0.5) {
-					this.count = 0;
-					this.$parent.price = Number(this.$parent.price) - Number(this.price / 2);
-					return;
-				}
-				this.count -= 1;
-				this.$parent.price = Number(this.$parent.price) - Number(this.price);
-				this.addToOrder();
-			}
-		},
-		half() {
-			this.$parent.price = Number(this.$parent.price) + Number(this.price / 2);
-			this.count += 0.5;
-			this.addToOrder();
-		},
-		addToOrder() {
-			if (this.count !== 1 && this.count !== 0.5) {
-				// console.log(this.$parent.order);
-				// const seen = new Map(this.$parent.order);
-				this.$parent.order.forEach((items, i) => {
-					if (items['菜名'] === this.name) {
-						if (this.count === 0) {
-							// this.$parent.order.filter((a) => !seen.has(a) && seen.set(a, 1));
-							// const index = this.$parent.order.indexOf(items);
-							// const tem = new Map(this.$parent.order);
-							// console.log(tem);
-							// tem.delete(index);
-							// console.log(this.$parent.order.splice(i, 1));
-							this.$parent.order.splice(i, 1);
-							console.log(this.$parent.order);
-							return;
-						}
-						this.$parent.order[i]['数量'] = this.count;
-						return;
-					}
-				});
-				// for (const items of this.$parent.order) {
-				// 	// console.log(key);
-				// 	// console.log(value);
-				// 	if (items['菜名'] === this.name) {
-				// 		if (this.count === 0) {
-				// 			// this.$parent.order.filter((a) => !seen.has(a) && seen.set(a, 1));
-				// 			// const index = this.$parent.order.indexOf(items);
-				// 			// const tem = new Map(this.$parent.order);
-				// 			// console.log(tem);
-				// 			// tem.delete(index);
-				// 			console.log(new Set(items));
-				// 			// this.$parent.order = this.$parent.order.from(new Set(items));
-				// 			break;
-				// 		}
-				// 		items['数量'] = this.count;
-				// 		break;
-				// 	}
-				// }
-				return;
-			}
-			this.$parent.order.push({
-				菜名: this.name,
-				数量: this.count,
-			});
-		},
-	},
-};
-</script>
-
 <style lang="scss">
 	$text: 1rem;
 	$size: 2rem;
@@ -149,3 +53,75 @@ export default {
 		}
 	}
 </style>
+
+<template>
+	<div class="block">
+		<div class="count" v-if="count != 0">{{ count }}</div>
+		<img :src="img || 'https://martin-upload.b0.upaiyun.com/web/2017/02/4cb4a876a19277c786af8614074ab05a.jpg'" alt="">
+		<div class="name">{{ num + ' ' + name }}</div>
+		<div class="price">{{ '￥' + price }}</div>
+		<div class="order">
+			<div @click="half">半</div>
+			<div @click="add">+</div>
+			<div @click="minus">-</div>
+		</div>
+	</div>
+</template>
+
+<script>
+export default {
+	name: 'list',
+	data() {
+		return {
+			count: 0,
+		};
+	},
+	props: ['num', 'name', 'img', 'price'],
+	methods: {
+		add() {
+			this.$parent.price = Number(this.$parent.price) + Number(this.price);
+			this.count += 1;
+			this.addToOrder();
+		},
+		minus() {
+			if (this.count !== 0) {
+				if (this.count === 0.5) {
+					this.count = 0;
+					this.$parent.price = Number(this.$parent.price) - Number(this.price / 2);
+					this.addToOrder(true);
+					return;
+				}
+				this.count -= 1;
+				this.$parent.price = Number(this.$parent.price) - Number(this.price);
+				this.addToOrder(true);
+			}
+		},
+		half() {
+			this.$parent.price = Number(this.$parent.price) + Number(this.price / 2);
+			this.count += 0.5;
+			this.addToOrder(false, true);
+		},
+		addToOrder(must, half) {
+			if (((this.count !== 1 || half) && this.count !== 0.5) || must) {
+				this.$parent.order.forEach((items, i) => {
+					if (items.name === this.name) {
+						if (this.count === 0) {
+							this.$parent.order.splice(i, 1);
+							return;
+						}
+						this.$parent.order[i].count = this.count;
+						return;
+					}
+				});
+				return;
+			}
+			this.$parent.order.push({
+				name: this.name,
+				count: this.count,
+				price: this.price,
+				number: this.num,
+			});
+		},
+	},
+};
+</script>

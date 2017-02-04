@@ -9,7 +9,20 @@
 		<div @click="show_order" class="show_order btn">结算</div>
 		<MaskShadow v-show="show_mask">
 			<div v-show="show_mask" class="ordered">
-				{{ order }}
+				<tbody align="center">
+					<tr>
+						<td>菜品号码</td>
+						<td>菜名</td>
+						<td>数量</td>
+						<td>单价</td>
+					</tr>
+					<tr v-for="items in order">
+						<td>{{ items.number }}</td>
+						<td>{{ items.name }}</td>
+						<td>{{ items.count }}</td>
+						<td>{{ "￥" + items.price }}</td>
+					</tr>
+				</tbody>					
 			</div>
 		</MaskShadow>
 	</div>
@@ -36,6 +49,14 @@ export default {
 	methods: {
 		show_order() {
 			this.show_mask = true;
+		},
+	},
+	filters: {
+		json(value) {
+			console.log('value');
+			console.log(value);
+			if (!value) return;
+			// return JSON.parse(value);
 		},
 	},
 };
@@ -88,5 +109,6 @@ export default {
 	height:80%;
 	background:white;
 	color: black;
+	overflow:scroll;
 }
 </style>
