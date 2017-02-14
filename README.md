@@ -2,6 +2,8 @@
 
 > 餐饮点餐系统
 
+项目DEMO地址：order.iscode.cn
+
 ## Build Setup
 
 ``` bash
